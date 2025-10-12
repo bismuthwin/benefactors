@@ -28,11 +28,11 @@ export default function ObjectPage({ params }: { params: Promise<{ id: string }>
             <Container w={"100%"}>
                 <Flex direction={"column"} gap={"xs"} w={"100%"}>
                     <Flex direction={"column"} gap={"xs"} w={"100%"} className={styles.header}>
-                        <Progress.Root h={"lg"}>
+                        <Progress.Root h={"xl"}>
                             <Progress.Section
                                 value={(total_chipped_in / object.total_price) * 100}
                                 color="green"
-                                animated
+                                animated={total_chipped_in < object.total_price}
                             >
                                 <Progress.Label>
                                     <Text c="white" fw={700} fz="sm" className={styles.progressLabel}>
@@ -42,7 +42,7 @@ export default function ObjectPage({ params }: { params: Promise<{ id: string }>
                             </Progress.Section>
                             <Progress.Section
                                 value={((object.total_price - total_chipped_in) / object.total_price) * 100}
-                                color="gray"
+                                color="black"
                             >
                                 <Progress.Label>
                                     <Text c="red" fw={700} fz="sm" className={styles.progressLabel}>
@@ -65,6 +65,11 @@ export default function ObjectPage({ params }: { params: Promise<{ id: string }>
                         </div>
 
                         <Text mb={"xl"}>{object.description}</Text>
+
+                        <Divider />
+                        <Text ml={"auto"} mr={0} opacity={0.25} size="sm">
+                            Created on: {new Date(object.createdAt).toLocaleDateString()}
+                        </Text>
                     </Flex>
 
                     <Divider />
