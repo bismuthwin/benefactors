@@ -29,7 +29,7 @@ export function useDeleteObject() {
                     color: "green",
                 });
                 await queryClient.invalidateQueries({ queryKey: ["chip"] });
-                await queryClient.invalidateQueries({ queryKey: ["object"] });
+                await queryClient.invalidateQueries({ queryKey: ["object", object_id] });
                 await queryClient.invalidateQueries({ queryKey: ["objects"] });
             }
         },
