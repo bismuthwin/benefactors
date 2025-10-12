@@ -64,7 +64,10 @@ export default function ObjectPage({ params }: { params: Promise<{ id: string }>
                             )}
                         </div>
 
-                        <Text mb={"xl"}>{object.description}</Text>
+                        <Text
+                            mb={"xl"}
+                            dangerouslySetInnerHTML={{ __html: object.description.replace("\n", "<br/>") }}
+                        />
 
                         <Divider />
                         <Text ml={"auto"} mr={0} opacity={0.25} size="sm">
