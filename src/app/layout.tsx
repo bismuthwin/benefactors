@@ -1,5 +1,6 @@
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
+import "@mantine/dropzone/styles.css";
 import "~/styles/globals.scss";
 
 import { type Metadata } from "next";
@@ -24,7 +25,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     return (
         <html lang="en" {...mantineHtmlProps}>
             <head>
-                <link rel="preload" href="/img/bismuth.avif" as="image" />
+                {/* <link rel="preload" href="/img/bismuth.avif" as="image" /> */}
                 <ColorSchemeScript forceColorScheme="dark" defaultColorScheme="dark" />
                 <meta
                     name="viewport"
