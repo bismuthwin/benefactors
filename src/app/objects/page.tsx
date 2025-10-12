@@ -26,13 +26,27 @@ export default function ObjectsPage() {
                     <Divider />
                     <SimpleGrid cols={2} spacing="md" verticalSpacing="md">
                         {objects?.length == 0 && <Text>No objects created yet :(</Text>}
-                        {objects?.map((object, index) => (
-                            <ObjectCard key={index} object={object} />
-                        ))}
+                        {objects
+                            ?.filter(
+                                (x) => x.chips.reduce((acc, chip) => acc + Number(chip.czk_amount), 0) < x.total_price,
+                            )
+                            .map((object, index) => (
+                                <ObjectCard key={index} object={object} />
+                            ))}
                     </SimpleGrid>
                     <Divider />
                     <Title order={2}>Finished</Title>
                     <Divider />
+                    <SimpleGrid cols={2} spacing="md" verticalSpacing="md">
+                        {objects?.length == 0 && <Text>No objects created yet :(</Text>}
+                        {objects
+                            ?.filter(
+                                (x) => x.chips.reduce((acc, chip) => acc + Number(chip.czk_amount), 0) >= x.total_price,
+                            )
+                            .map((object, index) => (
+                                <ObjectCard key={index} object={object} />
+                            ))}
+                    </SimpleGrid>
                 </Flex>
             </Container>
         </Flex>
