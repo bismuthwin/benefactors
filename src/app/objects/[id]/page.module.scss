@@ -1,0 +1,93 @@
+.header {
+    background-color: #222;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    margin-bottom: 1rem;
+}
+
+.imageHeader {
+    position: relative;
+    width: 100%;
+    height: 250px;
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+    border-radius: 8px;
+    padding: 0.3rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+
+    -webkit-user-drag: none;
+    user-select: none;
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.7);
+
+    .name {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 0.5rem;
+        font-size: 2.5rem;
+        font-weight: bold;
+        text-align: center;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        user-select: text;
+    }
+}
+
+.progressLabel {
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.7);
+    user-select: text;
+}
+
+.image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    object-fit: cover;
+    opacity: 0.75;
+    border-radius: 8px;
+
+    -webkit-user-drag: none;
+    user-select: none;
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.7);
+}
+
+.noChips {
+    width: 100%;
+    padding: 2rem;
+    border: 2px dashed #555;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #aaa;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    user-select: none;
+
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.6;
+        color: white;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
