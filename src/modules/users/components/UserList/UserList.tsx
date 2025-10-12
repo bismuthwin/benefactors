@@ -6,7 +6,7 @@ import { db } from "~/server/db";
 import UserListItem from "../UserListItem/UserListItem";
 
 export async function UserList() {
-    const users = await db.user.findMany();
+    const users = await db.user.findMany({ include: { chips: true }, orderBy: { chips: { _count: "desc" } } });
     return (
         <Flex
             direction={"column"}

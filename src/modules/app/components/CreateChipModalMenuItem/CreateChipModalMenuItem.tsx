@@ -14,7 +14,7 @@ import {
 import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { IconCoins } from "@tabler/icons-react";
-import { useCreateChip, useObjects, useUsers } from "~/modules/app";
+import { useAdminCreateChip, useObjects, useUsers } from "~/modules/app";
 import type { ChipFormModel } from "~/types/ChipFormModel";
 
 interface CreateChipModalMenuItemProps {
@@ -26,7 +26,7 @@ export function CreateChipModalMenuItem({ iconSize = 24 }: CreateChipModalMenuIt
         mode: "uncontrolled",
         initialValues: {
             czk_amount: 0,
-            object_id: 0,
+            object_id: "",
             user_id: undefined,
             name: undefined,
             verified: false,
@@ -35,7 +35,7 @@ export function CreateChipModalMenuItem({ iconSize = 24 }: CreateChipModalMenuIt
 
     const { data: objects } = useObjects();
     const { data: users } = useUsers();
-    const { mutate } = useCreateChip();
+    const { mutate } = useAdminCreateChip();
 
     if (!objects) return null;
 

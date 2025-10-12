@@ -2,35 +2,38 @@
 
 import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { ChipFormModel } from "~/types/ChipFormModel";
 
-export function useCreateChip() {
+interface UseAdminVerifyChipProps {
+    object_id: string;
+    chip_id: string;
+}
+
+export function useAdminVerifyChip({ object_id, chip_id }: UseAdminVerifyChipProps) {
     const queryClient = useQueryClient();
-    const { mutate, isPending: isLoading } = useMutation<void, Error, ChipFormModel>({
-        mutationFn: async (chip: ChipFormModel) => {
-            const response = await fetch(`/api/user-chip-in`, {
+    const { mutate, isPending: isLoading } = useMutation<void, Error, string>({
+        mutationFn: async () => {
+            const response = await fetch(`/api/chips/${chip_id}/verify`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ ...chip }),
             });
 
             if (!response.ok) {
                 notifications.show({
                     title: "Error",
-                    message: `Failed to chip: ${response.statusText}`,
+                    message: `Failed to verify chip: ${response.statusText}`,
                     color: "red",
                 });
-                throw new Error(`Failed to create chip: ${response.statusText}`);
+                throw new Error(`Failed to verify chip: ${response.statusText}`);
             } else {
                 notifications.show({
                     title: "Success!",
-                    message: "Chipped in successfully",
+                    message: "Chip successfully verified",
                     color: "green",
                 });
-                await queryClient.invalidateQueries({ queryKey: ["chip"] });
-                await queryClient.invalidateQueries({ queryKey: ["object", chip.object_id] });
+                await queryClient.invalidateQueries({ queryKey: ["chip", chip_id] });
+                await queryClient.invalidateQueries({ queryKey: ["object", object_id] });
                 await queryClient.invalidateQueries({ queryKey: ["objects"] });
             }
         },

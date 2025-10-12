@@ -4,11 +4,11 @@ import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { ChipFormModel } from "~/types/ChipFormModel";
 
-export function useCreateChip() {
+export function useAdminCreateChip() {
     const queryClient = useQueryClient();
     const { mutate, isPending: isLoading } = useMutation<void, Error, ChipFormModel>({
         mutationFn: async (chip: ChipFormModel) => {
-            const response = await fetch(`/api/user-chip-in`, {
+            const response = await fetch(`/api/chips`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -19,14 +19,14 @@ export function useCreateChip() {
             if (!response.ok) {
                 notifications.show({
                     title: "Error",
-                    message: `Failed to chip: ${response.statusText}`,
+                    message: `Failed to tip: ${response.statusText}`,
                     color: "red",
                 });
-                throw new Error(`Failed to create chip: ${response.statusText}`);
+                throw new Error(`Failed to create tip: ${response.statusText}`);
             } else {
                 notifications.show({
                     title: "Success!",
-                    message: "Chipped in successfully",
+                    message: "Tipped successfully",
                     color: "green",
                 });
                 await queryClient.invalidateQueries({ queryKey: ["chip"] });

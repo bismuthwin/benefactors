@@ -1,7 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button, Group, Image, InputLabel, Menu, NumberInput, Text, Textarea, TextInput } from "@mantine/core";
+import {
+    Button,
+    Checkbox,
+    Group,
+    Image,
+    InputLabel,
+    Menu,
+    NumberInput,
+    Text,
+    Textarea,
+    TextInput,
+} from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE, type FileWithPath } from "@mantine/dropzone";
 import { useForm } from "@mantine/form";
 import { modals } from "@mantine/modals";
@@ -9,6 +20,7 @@ import { IconPhoto, IconServerSpark, IconUpload, IconX } from "@tabler/icons-rea
 import { useCreateObject, useUploadImage } from "~/modules/app";
 import { LoadOverlay } from "~/modules/system";
 import type { ObjectFormModel } from "~/types/ObjectFormModel";
+import type { ObjectResponse } from "~/types/ObjectResponse";
 
 import styles from "./CreateObjectModalMenuItem.module.scss";
 
@@ -25,7 +37,7 @@ export function CreateObjectModalMenuItem({ iconSize = 24 }: CreateObjectModalMe
             title: "Create new object",
             size: "lg",
             centered: true,
-            children: <CreateObjectForm createObject={mutate} uploadImage={uploadImage} />,
+            children: <ObjectForm mutate={mutate} uploadImage={uploadImage} />,
         });
     };
 
@@ -37,18 +49,22 @@ export function CreateObjectModalMenuItem({ iconSize = 24 }: CreateObjectModalMe
 }
 
 interface CreateObjectFormProps {
-    createObject: (values: ObjectFormModel) => void;
+    mutate: (values: ObjectFormModel) => void;
     uploadImage?: (image: FileWithPath) => Promise<string>;
+    object?: ObjectResponse;
+    onSuccess?: () => void;
 }
 
-function CreateObjectForm({ createObject, uploadImage }: CreateObjectFormProps) {
+export function ObjectForm({ mutate, uploadImage, object, onSuccess }: CreateObjectFormProps) {
     const form = useForm<ObjectFormModel>({
         mode: "uncontrolled",
         initialValues: {
-            name: "",
-            description: "",
-            imageUrl: "",
-            total_price: 0,
+            name: object?.name ?? "",
+            description: object?.description ?? "",
+            imageUrl: object?.imageUrl ?? "",
+            total_price: object?.total_price ?? 0,
+            finished: object?.finished ?? false,
+            unlisted: object?.unlisted ?? false,
         },
     });
 
@@ -105,18 +121,21 @@ function CreateObjectForm({ createObject, uploadImage }: CreateObjectFormProps) 
                     setUploading(true);
                     try {
                         // Create a new File with the sanitized name
-                        const sanitizedName = values.name
-                            .trim()
-                            .toLowerCase()
-                            .replace(/[^a-z0-9]+/g, "-");
+                        const sanitizedName =
+                            values.name ??
+                            ""
+                                .trim()
+                                .toLowerCase()
+                                .replace(/[^a-z0-9]+/g, "-");
                         const extension = imageFile.name.split(".").pop() ?? "png";
                         const newFile = new File([imageFile], `${sanitizedName}.${extension}`, {
                             type: imageFile.type,
                         });
 
                         const url = await uploadImage(newFile);
-                        createObject({ ...values, imageUrl: url });
+                        mutate({ ...values, imageUrl: url });
                         modals.closeAll();
+                        onSuccess?.();
                     } catch (error) {
                         console.error("Upload failed:", error);
                     } finally {
@@ -124,8 +143,9 @@ function CreateObjectForm({ createObject, uploadImage }: CreateObjectFormProps) 
                     }
                     return;
                 } else {
-                    createObject(values);
+                    mutate(values);
                     modals.closeAll();
+                    onSuccess?.();
                 }
             })}
         >
@@ -177,8 +197,21 @@ function CreateObjectForm({ createObject, uploadImage }: CreateObjectFormProps) 
                 placeholder="Total price in CZK"
                 {...form.getInputProps("total_price")}
             />
+
+            <Checkbox
+                mt="md"
+                label="Finished"
+                description="Mark the object as finished. This will prevent any further chip-ins."
+                {...form.getInputProps("finished", { type: "checkbox" })}
+            />
+            <Checkbox
+                mt="md"
+                label="Unlisted"
+                description="Unlist the object from the main page. It will still be accessible via direct link."
+                {...form.getInputProps("unlisted", { type: "checkbox" })}
+            />
             <Button type="submit" mt="md" fullWidth>
-                Create
+                {object ? "Update Object" : "Create Object"}
             </Button>
         </form>
     );

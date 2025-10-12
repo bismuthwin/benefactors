@@ -31,6 +31,11 @@
         font-size: 1.2rem;
     }
 
+    .progressLabel {
+        text-shadow: 0 0 3px rgba(0, 0, 0, 0.7);
+        user-select: text;
+    }
+
     p {
         margin: 0;
     }

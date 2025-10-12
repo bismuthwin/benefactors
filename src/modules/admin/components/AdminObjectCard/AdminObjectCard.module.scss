@@ -48,6 +48,10 @@
     font-size: 1.2rem;
 }
 
+.status {
+    font-size: 1.2rem;
+}
+
 .image {
     position: absolute;
     top: 0;
@@ -62,4 +66,9 @@
     -webkit-user-drag: none;
     user-select: none;
     pointer-events: none;
+}
+
+.modalImage {
+    filter: blur(4px);
+    opacity: 0.3;
 }

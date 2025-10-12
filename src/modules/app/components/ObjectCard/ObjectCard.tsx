@@ -24,19 +24,28 @@ export function ObjectCard({ object }: ObjectCardProps) {
             )}
             <Text className={styles.name}>{object.name}</Text>
             <Text className={styles.price_czk}>{object.total_price} CZK</Text>
-            <Text className={styles.progress}>
-                {total_chipped_in} CZK / {object.total_price} CZK chipped in
-            </Text>
-            <Progress.Root h={"xs"} mt={"auto"} mb={0}>
+            <Progress.Root h={"xl"} mt={"auto"} mb={0}>
                 <Progress.Section
                     value={(total_chipped_in / object.total_price) * 100}
                     color="green"
                     animated={total_chipped_in < object.total_price}
-                ></Progress.Section>
+                >
+                    <Progress.Label ml={0} mr={"auto"}>
+                        <Text c="white" fw={700} fz="sm" className={styles.progressLabel}>
+                            {total_chipped_in.toFixed(2)} CZK
+                        </Text>
+                    </Progress.Label>
+                </Progress.Section>
                 <Progress.Section
                     value={((object.total_price - total_chipped_in) / object.total_price) * 100}
                     color="black"
-                ></Progress.Section>
+                >
+                    <Progress.Label mr={0} ml={"auto"}>
+                        <Text c="red" fw={700} fz="sm" className={styles.progressLabel}>
+                            {(object.total_price - total_chipped_in).toFixed(2)} CZK left
+                        </Text>
+                    </Progress.Label>
+                </Progress.Section>
             </Progress.Root>
         </div>
     );

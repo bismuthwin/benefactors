@@ -1,6 +1,6 @@
 "use client";
 
-import { Container, Divider, Flex, SimpleGrid, Text, Title } from "@mantine/core";
+import { Center, Container, Divider, Flex, SimpleGrid, Text, Title } from "@mantine/core";
 import { DiscordLoginOverlay, LoadOverlay, ObjectCard, useObjects } from "~/modules";
 import { useSession } from "next-auth/react";
 
@@ -24,25 +24,26 @@ export default function ObjectsPage() {
 
                     <Title order={2}>Ongoing</Title>
                     <Divider />
-                    <SimpleGrid cols={2} spacing="md" verticalSpacing="md">
-                        {objects?.length == 0 && <Text>No objects created yet :(</Text>}
-                        {objects
-                            ?.filter(
-                                (x) => x.chips.reduce((acc, chip) => acc + Number(chip.czk_amount), 0) < x.total_price,
-                            )
-                            .map((object, index) => (
-                                <ObjectCard key={index} object={object} />
-                            ))}
-                    </SimpleGrid>
+                    {objects?.filter((x) => !x.finished && !x.unlisted).length == 0 ? (
+                        <Center>
+                            <Text>No ongoing objects</Text>
+                        </Center>
+                    ) : (
+                        <SimpleGrid cols={2} spacing="md" verticalSpacing="md">
+                            {objects
+                                ?.filter((x) => !x.finished && !x.unlisted)
+                                .map((object, index) => (
+                                    <ObjectCard key={index} object={object} />
+                                ))}
+                        </SimpleGrid>
+                    )}
                     <Divider />
                     <Title order={2}>Finished</Title>
                     <Divider />
-                    <SimpleGrid cols={2} spacing="md" verticalSpacing="md">
+                    <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md" verticalSpacing="md" mb={"xl"}>
                         {objects?.length == 0 && <Text>No objects created yet :(</Text>}
                         {objects
-                            ?.filter(
-                                (x) => x.chips.reduce((acc, chip) => acc + Number(chip.czk_amount), 0) >= x.total_price,
-                            )
+                            ?.filter((x) => x.finished && !x.unlisted)
                             .map((object, index) => (
                                 <ObjectCard key={index} object={object} />
                             ))}

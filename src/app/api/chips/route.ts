@@ -64,7 +64,7 @@ export async function POST(request: Request) {
         const chip = await db.chip.create({
             data: {
                 czk_amount,
-                chippedInByUserId: user_id ?? session.user.discord_id,
+                chippedInByUserId: user_id,
                 objectId: object_id,
                 verified: verified ?? false,
             },
@@ -122,14 +122,14 @@ export async function DELETE(request: Request) {
             return Response.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const { id } = await request.json();
+        const { chip_id } = await request.json();
 
-        if (!id || typeof id !== "string" || id.trim().length === 0) {
+        if (!chip_id || typeof chip_id !== "string" || chip_id.trim().length === 0) {
             return Response.json({ error: "Invalid id" }, { status: 400 });
         }
 
         await db.chip.delete({
-            where: { id },
+            where: { id: chip_id },
         });
 
         return Response.json({ message: "Chip deleted successfully" });

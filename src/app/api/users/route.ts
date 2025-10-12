@@ -9,7 +9,7 @@ export async function GET() {
             return Response.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const users = await db.user.findMany();
+        const users = await db.user.findMany({ include: { chips: true }, orderBy: { chips: { _count: "desc" } } });
         return Response.json(users);
     } catch (error) {
         console.log(error);
