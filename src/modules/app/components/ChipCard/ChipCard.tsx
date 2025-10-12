@@ -15,7 +15,7 @@ export function ChipCard({ chip }: ChipCardProps) {
         <div className={styles.chip}>
             {!chip.verified && (
                 <div className={styles.unverifiedOverlay}>
-                    <p>UNVERIFIED PAYMENT</p>
+                    <p>😱 UNVERIFIED PAYMENT 😱</p>
                 </div>
             )}
             <PunchableAvatar src={chip.chippedInByUser.image ?? ""} particles={false} />
