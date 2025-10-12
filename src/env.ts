@@ -13,6 +13,9 @@ export const env = createEnv({
         DATABASE_URL: z.string().url(),
         NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
         MAIN_GUILD_ID: z.string(),
+        COPYPARTY_URL: z.string().url(),
+        COPYPARTY_USERNAME: z.string(),
+        COPYPARTY_PASSWORD: z.string(),
     },
 
     /**
@@ -35,6 +38,9 @@ export const env = createEnv({
         DATABASE_URL: process.env.DATABASE_URL,
         NODE_ENV: process.env.NODE_ENV,
         MAIN_GUILD_ID: process.env.MAIN_GUILD_ID,
+        COPYPARTY_URL: process.env.COPYPARTY_URL,
+        COPYPARTY_USERNAME: process.env.COPYPARTY_USERNAME,
+        COPYPARTY_PASSWORD: process.env.COPYPARTY_PASSWORD,
     },
     /**
      * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
