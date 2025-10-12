@@ -16,6 +16,7 @@ const nextConfig: NextConfig = {
     sassOptions: {
         implementation: "sass-embedded",
         additionalData: `@use "${path.join(process.cwd(), "_mantine").replace(/\\/g, "/")}" as mantine;`,
+        silenceDeprecations: ["legacy-js-api"],
     },
     images: {
         domains: ["flwn.dev", "files.flwn.dev", "i.flwn.dev", "cdn.discordapp.com", "cdn.cloudflare.steamstatic.com"],

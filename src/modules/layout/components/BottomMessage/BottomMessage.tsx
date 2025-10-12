@@ -1,8 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import { Flex, Text } from "@mantine/core";
-import { Routes } from "~/constants/routes";
 import { useSession } from "next-auth/react";
 
 export function BottomMessage() {

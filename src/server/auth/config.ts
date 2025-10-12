@@ -1,17 +1,11 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import type { UserRole } from "@prisma/client";
-import { Routes } from "~/constants/routes";
 import { env } from "~/env";
-import { db } from "~/server/db";
-import { type DefaultSession, type NextAuthConfig } from "next-auth";
+import { type DefaultSession, type MyUser, type NextAuthConfig } from "next-auth";
 import DiscordProvider, { type DiscordProfile } from "next-auth/providers/discord";
 
-/**
- * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
- * object and keep type safety.
- *
- * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
- */
+import { db } from "../db";
+
 declare module "next-auth" {
     interface Session extends DefaultSession {
         user: MyUser;
@@ -32,9 +26,17 @@ const prismaAdapter = PrismaAdapter(db);
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
 prismaAdapter.createUser = (data: MyUser) => {
-    console.log("Creating user with data:", data);
-    return db.user.create({
-        data: {
+    console.log("Creating/updating user with data:", data);
+    return db.user.upsert({
+        where: {
+            id: data.discord_id, // Use discord ID as the user ID
+        },
+        update: {
+            name: data.name,
+            image: data.image,
+            // Don't update role on subsequent logins to preserve any manual role changes
+        },
+        create: {
             id: data.discord_id, // ensures the ID is the same as the discord ID
             name: data.name,
             image: data.image,
@@ -77,7 +79,7 @@ export const authConfig = {
             ...session,
             user: {
                 ...session.user,
-                discord_id: user.discord_id,
+                discord_id: (user as unknown as MyUser)?.discord_id,
             },
         }),
         async signIn({ profile: _profile, account, user: _user }) {

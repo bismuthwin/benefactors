@@ -43,6 +43,7 @@
         "zod": "^3.24.2"
     },
     "devDependencies": {
+        "@auth/core": "^0.41.0",
         "@eslint/eslintrc": "^3.3.1",
         "@ianvs/prettier-plugin-sort-imports": "4.7.0",
         "@types/node": "20.19.21",
