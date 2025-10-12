@@ -82,7 +82,8 @@ model Object {
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt
     chips       Chip[]
-    finished   Boolean  @default(false)
+    finished    Boolean  @default(false)
+    unlisted    Boolean  @default(false)
 }
 
 // Used when we need to bypass checking if user is in main guild
