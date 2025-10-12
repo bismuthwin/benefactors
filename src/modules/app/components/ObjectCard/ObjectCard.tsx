@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Image, Text } from "@mantine/core";
+import { Image, Progress, Text } from "@mantine/core";
 import { Routes } from "~/constants/routes";
 import type { ObjectResponse } from "~/types/ObjectResponse";
 
@@ -27,6 +27,17 @@ export function ObjectCard({ object }: ObjectCardProps) {
             <Text className={styles.progress}>
                 {total_chipped_in} CZK / {object.total_price} CZK chipped in
             </Text>
+            <Progress.Root h={"xs"} mt={"auto"} mb={0}>
+                <Progress.Section
+                    value={(total_chipped_in / object.total_price) * 100}
+                    color="green"
+                    animated={total_chipped_in < object.total_price}
+                ></Progress.Section>
+                <Progress.Section
+                    value={((object.total_price - total_chipped_in) / object.total_price) * 100}
+                    color="black"
+                ></Progress.Section>
+            </Progress.Root>
         </div>
     );
 }
