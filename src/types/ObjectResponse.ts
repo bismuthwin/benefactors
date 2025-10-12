@@ -9,4 +9,6 @@ export interface ObjectResponse {
     createdAt: Date;
     updatedAt: Date;
     chips: ChipResponse[];
+    finished: boolean;
+    unlisted: boolean;
 }
