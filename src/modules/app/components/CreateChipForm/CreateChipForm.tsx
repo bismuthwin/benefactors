@@ -35,6 +35,8 @@ export function CreateChipForm({ object, onSuccess }: CreateChipFormProps) {
                 label="Total Amount (In CZK)"
                 placeholder="Total amount in CZK"
                 {...form.getInputProps("czk_amount")}
+                min={0}
+                max={object.total_price}
             />
             <Button type="submit" mt="md" fullWidth>
                 Chip in
