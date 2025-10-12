@@ -9,7 +9,10 @@ export async function GET() {
             return Response.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const objects = await db.object.findMany({ include: { chips: true }, orderBy: { createdAt: "desc" } });
+        const objects = await db.object.findMany({
+            include: { chips: { orderBy: { czk_amount: "desc" } } },
+            orderBy: { createdAt: "desc" },
+        });
 
         return Response.json(objects);
     } catch (error) {
@@ -121,14 +124,14 @@ export async function DELETE(request: Request) {
             return Response.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const { id } = await request.json();
+        const { object_id } = await request.json();
 
-        if (!id || typeof id !== "string" || id.trim().length === 0) {
+        if (!object_id || typeof object_id !== "string" || object_id.trim().length === 0) {
             return Response.json({ error: "Invalid id" }, { status: 400 });
         }
 
         await db.object.delete({
-            where: { id },
+            where: { id: object_id },
         });
 
         return Response.json({ message: "Object deleted" });
