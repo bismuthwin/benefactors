@@ -4,11 +4,11 @@ import type { ObjectFormModel } from "~/types/ObjectFormModel";
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const session = await auth();
+        // const session = await auth();
 
-        if (!session?.user) {
-            return Response.json({ error: "Unauthorized" }, { status: 401 });
-        }
+        // if (!session?.user) {
+        //     return Response.json({ error: "Unauthorized" }, { status: 401 });
+        // }
 
         // get slug (i cba finding the proper way of doing this)
         const { id } = await params;
