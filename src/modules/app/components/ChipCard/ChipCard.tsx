@@ -17,6 +17,8 @@ interface ChipCardProps {
 
 export function ChipCard({ object_id, chip }: ChipCardProps) {
     const { data: session } = useSession({ required: false });
+    const isAdmin = session?.user.role === "Admin";
+
     const [opened, { open, close }] = useDisclosure(false);
     const { mutate: toggleVerification } = useAdminVerifyChip({ object_id: object_id, chip_id: chip.id });
     const { mutate: deleteChip } = useDeleteChip({ object_id: object_id });
@@ -37,13 +39,13 @@ export function ChipCard({ object_id, chip }: ChipCardProps) {
 
     return (
         <>
-            <div className={styles.chip}>
-                {!chip.verified && (
-                    <div className={styles.unverifiedOverlay}>
-                        <p>😱 UNVERIFIED PAYMENT 😱</p>
-                    </div>
-                )}
-                <PunchableAvatar src={chip.chippedInByUser.image ?? ""} particles={false} />
+            <div className={styles.chip} data-verified={chip.verified}>
+                <PunchableAvatar
+                    src={chip.chippedInByUser.image ?? ""}
+                    particles={isAdmin}
+                    soundUrl={isAdmin ? "/sfx/punch.mp3" : undefined}
+                    scalar={2}
+                />
                 <Text className={styles.name}>{chip.chippedInByUser.name}</Text>
                 <Text className={styles.price_czk}>{Number(chip.czk_amount).toFixed(2)} CZK</Text>
                 {session?.user.role === "Admin" && (
