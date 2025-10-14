@@ -1,5 +1,6 @@
 import { Button, NumberInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { IconCoins } from "@tabler/icons-react";
 import { useCreateChip, useObjects } from "~/modules/app";
 import type { ChipFormModel } from "~/types/ChipFormModel";
 import type { ObjectResponse } from "~/types/ObjectResponse";
@@ -13,7 +14,7 @@ export function CreateChipForm({ object, onSuccess }: CreateChipFormProps) {
     const form = useForm<ChipFormModel>({
         mode: "uncontrolled",
         initialValues: {
-            czk_amount: 0,
+            czk_amount: 1,
             object_id: object.id,
         },
     });
@@ -35,10 +36,10 @@ export function CreateChipForm({ object, onSuccess }: CreateChipFormProps) {
                 label="Total Amount (In CZK)"
                 placeholder="Total amount in CZK"
                 {...form.getInputProps("czk_amount")}
-                min={0}
+                min={1}
                 max={object.total_price}
             />
-            <Button type="submit" mt="md" fullWidth>
+            <Button type="submit" mt="md" fullWidth leftSection={<IconCoins />} bg={"green"}>
                 Chip in
             </Button>
         </form>
