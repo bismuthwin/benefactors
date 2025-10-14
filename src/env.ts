@@ -16,6 +16,8 @@ export const env = createEnv({
         COPYPARTY_URL: z.string().url(),
         COPYPARTY_USERNAME: z.string(),
         COPYPARTY_PASSWORD: z.string(),
+        ADMIN_WEBHOOK_URL: z.string().url().optional(),
+        WEBHOOK_URL: z.string().url().optional(),
     },
 
     /**
@@ -41,6 +43,8 @@ export const env = createEnv({
         COPYPARTY_URL: process.env.COPYPARTY_URL,
         COPYPARTY_USERNAME: process.env.COPYPARTY_USERNAME,
         COPYPARTY_PASSWORD: process.env.COPYPARTY_PASSWORD,
+        ADMIN_WEBHOOK_URL: process.env.ADMIN_WEBHOOK_URL,
+        WEBHOOK_URL: process.env.WEBHOOK_URL,
     },
     /**
      * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
