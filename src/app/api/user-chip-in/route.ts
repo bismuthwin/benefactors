@@ -31,13 +31,13 @@ export async function POST(request: Request) {
         }
 
         // get current chip total of object
-        const current_total = object.chips
-            ?.filter((x) => x.verified)
-            ?.reduce((acc, chip) => acc + Number(chip.czk_amount), 0);
+        // const current_total = object.chips
+        //     ?.filter((x) => x.verified)
+        //     ?.reduce((acc, chip) => acc + Number(chip.czk_amount), 0);
 
-        if (current_total + czk_amount > Number(object.total_price)) {
-            return Response.json({ error: "Czk amount exceeds object's total price" }, { status: 400 });
-        }
+        // if (current_total + czk_amount > Number(object.total_price)) {
+        //     return Response.json({ error: "Czk amount exceeds object's total price" }, { status: 400 });
+        // }
 
         if (object.chips.some((chip) => chip.chippedInByUserId === (session.user as unknown as AdapterUser).id)) {
             return Response.json({ error: "You have already chipped in to this object" }, { status: 400 });
