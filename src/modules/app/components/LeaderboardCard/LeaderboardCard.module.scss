@@ -1,0 +1,52 @@
+.chip {
+    display: flex;
+    align-items: center;
+    gap: 0.67rem;
+    position: relative;
+    width: 100%;
+    background-color: #222;
+    flex-direction: row;
+    border-radius: 8px;
+    padding: 0.3rem;
+
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+
+    .name {
+        font-weight: bold;
+        font-size: 1.5rem;
+    }
+
+    .price_czk {
+        font-weight: bold;
+        font-size: 1.2rem;
+        margin-left: auto;
+        margin-right: 0.5rem;
+        color: #87d380;
+        text-shadow: 0 0 5px #87d380;
+    }
+
+    &[data-green-amount="true"] {
+        .price_czk {
+            color: #53d347;
+            text-shadow: 0 0 5px #53d347;
+        }
+    }
+
+    &[data-placement="0"] {
+        border: 2px solid gold;
+
+        .price_czk {
+            color: gold;
+            text-shadow: 0 0 5px gold;
+        }
+    }
+
+    &[data-placement="1"] {
+        border: 2px solid silver;
+    }
+
+    &[data-placement="2"] {
+        border: 2px solid #cd7f32;
+        /* Bronze color */
+    }
+}

@@ -4,4 +4,5 @@ export * from "./CreateChipForm";
 export * from "./CreateChipModalMenuItem";
 export * from "./CreateObjectModalMenuItem";
 export * from "./DiscordLoginOverlay";
+export * from "./LeaderboardCard";
 export * from "./ObjectCard";
