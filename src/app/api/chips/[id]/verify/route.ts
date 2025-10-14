@@ -17,8 +17,6 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
             return Response.json({ error: "Invalid id" }, { status: 400 });
         }
 
-        console.log(`the id is ${id}`);
-
         // Get verification status
         const existingChip = await db.chip.findUnique({
             where: { id },
