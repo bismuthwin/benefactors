@@ -1,6 +1,7 @@
 "use client";
 
 import { use } from "react";
+import Link from "next/link";
 import type { AdapterUser } from "@auth/core/adapters";
 import {
     ActionIcon,
@@ -9,6 +10,7 @@ import {
     Container,
     Divider,
     Flex,
+    Group,
     Image,
     Modal,
     Progress,
@@ -16,18 +18,17 @@ import {
     Tooltip,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconPencil } from "@tabler/icons-react";
+import { IconBrandDiscord, IconBrandPaypalFilled, IconBrandRevolut, IconCoins, IconPencil } from "@tabler/icons-react";
 import {
     ChipCard,
     CreateChipForm,
-    DiscordLoginOverlay,
     LoadOverlay,
     ObjectForm,
     useObject,
     useUpdateObject,
     useUploadImage,
 } from "~/modules";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
 import styles from "./page.module.scss";
 
@@ -43,14 +44,21 @@ export default function ObjectPage({ params }: { params: Promise<{ id: string }>
     const [openedChipIn, { open: openChipIn, close: closeChipIn }] = useDisclosure(false);
 
     if (isLoading || status === "loading") return <LoadOverlay visible />;
+    if (isLoading) return <LoadOverlay visible />;
 
-    if (session == null) return <DiscordLoginOverlay />;
+    // if (session == null) return <DiscordLoginOverlay />;
 
     if (object == null) return <Text>Object not found</Text>;
 
-    const total_chipped_in = object.chips
+    const verified_chipped_in = object.chips
         .filter((x) => x.verified)
         .reduce((acc, chip) => acc + Number(chip.czk_amount), 0);
+
+    const unverified_chipped_in = object.chips
+        .filter((x) => !x.verified)
+        .reduce((acc, chip) => acc + Number(chip.czk_amount), 0);
+
+    const total_chipped_in = object.chips.reduce((acc, chip) => acc + Number(chip.czk_amount), 0);
 
     return (
         <>
@@ -75,27 +83,45 @@ export default function ObjectPage({ params }: { params: Promise<{ id: string }>
                         )}
                         <Flex direction={"column"} gap={"xs"} w={"100%"} className={styles.header}>
                             <Progress.Root h={"xl"}>
-                                <Progress.Section
-                                    value={(total_chipped_in / object.total_price) * 100}
-                                    color="green"
-                                    animated={total_chipped_in < object.total_price}
-                                >
-                                    <Progress.Label>
-                                        <Text c="white" fw={700} fz="sm" className={styles.progressLabel}>
-                                            {total_chipped_in.toFixed(2)} CZK
-                                        </Text>
-                                    </Progress.Label>
-                                </Progress.Section>
-                                <Progress.Section
-                                    value={((object.total_price - total_chipped_in) / object.total_price) * 100}
-                                    color="black"
-                                >
-                                    <Progress.Label>
-                                        <Text c="red" fw={700} fz="sm" className={styles.progressLabel}>
-                                            {(object.total_price - total_chipped_in).toFixed(2)} CZK left
-                                        </Text>
-                                    </Progress.Label>
-                                </Progress.Section>
+                                <Tooltip withArrow label="Chips I have not yet received the money for.">
+                                    <Progress.Section
+                                        value={(unverified_chipped_in / object.total_price) * 100}
+                                        color="orange"
+                                        animated={unverified_chipped_in < object.total_price}
+                                    >
+                                        <Progress.Label>
+                                            <Text c="white" fw={700} fz="sm" className={styles.progressLabel}>
+                                                {unverified_chipped_in.toFixed(2)} CZK
+                                            </Text>
+                                        </Progress.Label>
+                                    </Progress.Section>
+                                </Tooltip>
+
+                                <Tooltip withArrow label="Chips I have received the money for.">
+                                    <Progress.Section
+                                        value={(verified_chipped_in / object.total_price) * 100}
+                                        color="green"
+                                        animated={verified_chipped_in < object.total_price}
+                                    >
+                                        <Progress.Label>
+                                            <Text c="white" fw={700} fz="sm" className={styles.progressLabel}>
+                                                {verified_chipped_in.toFixed(2)} CZK
+                                            </Text>
+                                        </Progress.Label>
+                                    </Progress.Section>
+                                </Tooltip>
+                                <Tooltip withArrow label="How much is left to reach the goal.">
+                                    <Progress.Section
+                                        value={((object.total_price - total_chipped_in) / object.total_price) * 100}
+                                        color="black"
+                                    >
+                                        <Progress.Label>
+                                            <Text c="red" fw={700} fz="sm" className={styles.progressLabel}>
+                                                {(object.total_price - total_chipped_in).toFixed(2)} CZK left
+                                            </Text>
+                                        </Progress.Label>
+                                    </Progress.Section>
+                                </Tooltip>
                             </Progress.Root>
                             <div className={styles.imageHeader}>
                                 {session?.user.role === "Admin" && (
@@ -141,8 +167,17 @@ export default function ObjectPage({ params }: { params: Promise<{ id: string }>
                                     </Text>
                                 </Center>
                             </div>
+                        ) : !session?.user ? (
+                            <Button
+                                fullWidth
+                                leftSection={<IconBrandDiscord />}
+                                size="xl"
+                                onClick={() => void signIn("discord")}
+                            >
+                                Sign in to chip in!
+                            </Button>
                         ) : object.chips.some(
-                              (chip) => chip.chippedInByUserId === (session?.user as unknown as AdapterUser).id,
+                              (chip) => chip.chippedInByUserId === (session?.user as unknown as AdapterUser)?.id,
                           ) ? (
                             <Tooltip label={"You have already chipped into this object."}>
                                 <Button fullWidth variant="light" size="xl" disabled>
@@ -150,9 +185,40 @@ export default function ObjectPage({ params }: { params: Promise<{ id: string }>
                                 </Button>
                             </Tooltip>
                         ) : (
-                            <Button fullWidth variant="light" size="xl" onClick={openChipIn}>
+                            <Button fullWidth leftSection={<IconCoins />} bg={"green"} size="xl" onClick={openChipIn}>
                                 Chip in
                             </Button>
+                        )}
+                        {!object.finished && session?.user && (
+                            <>
+                                <Divider />
+                                <Center>
+                                    <Group>
+                                        <Button
+                                            w={"min-content"}
+                                            leftSection={<IconBrandPaypalFilled />}
+                                            bg={"#003087"}
+                                            component={Link}
+                                            href={"https://paypal.me/antoninvondrovic"}
+                                            target="_blank"
+                                            size="md"
+                                        >
+                                            PayPal
+                                        </Button>
+                                        <Button
+                                            w={"min-content"}
+                                            leftSection={<IconBrandRevolut />}
+                                            bg={"#7F84F6"}
+                                            component={Link}
+                                            href={"https://revolut.me/antoninvondrovic"}
+                                            target="_blank"
+                                            size="md"
+                                        >
+                                            Revolut
+                                        </Button>
+                                    </Group>
+                                </Center>
+                            </>
                         )}
 
                         <Divider />
@@ -167,7 +233,9 @@ export default function ObjectPage({ params }: { params: Promise<{ id: string }>
                         <Divider />
                         <Flex w={"100%"} align={"end"} direction={"column"} mb={"lg"}>
                             <Text>Total price: {object.total_price} CZK</Text>
-                            <Text style={{ marginLeft: 16 }}>Total chipped in: {total_chipped_in.toFixed(2)} CZK</Text>
+                            <Text style={{ marginLeft: 16 }}>
+                                Total chipped in: {verified_chipped_in.toFixed(2)} CZK
+                            </Text>
                         </Flex>
                     </Flex>
                 </Container>
@@ -175,13 +243,28 @@ export default function ObjectPage({ params }: { params: Promise<{ id: string }>
             <Modal opened={openedEdit} onClose={closeEdit} size="lg" withCloseButton={false} centered>
                 <ObjectForm mutate={updateObject} uploadImage={uploadImage} object={object} onSuccess={closeEdit} />
             </Modal>
-            <Modal
-                opened={openedChipIn}
-                onClose={closeChipIn}
-                withCloseButton={false}
-                title={"How much do you want to give?"}
-                centered
-            >
+            <Modal opened={openedChipIn} onClose={closeChipIn} withCloseButton={false} size={"lg"} centered>
+                <Text fw={"bold"} size="lg">
+                    How does chipping in work?
+                </Text>
+                <Divider mb={"sm"} />
+                <Text>Right now you put in how much money you are willing to give.</Text>
+                <Text>Your chip will get put as unverified until you send money via PayPal etc.</Text>
+                <br />
+                <Text fw={"bold"} size="lg">
+                    When do I send the money?
+                </Text>
+                <Divider mb={"sm"} />
+                <Text>You either send it right now or when the object goal gets reached.</Text>
+                <Text>Once I receive the money, I will verify your chip.</Text>
+                <br />
+                <Divider mb={"xs"} />
+                <Text fw={"bold"} ta={"center"}>
+                    As always I&apos;ll pay the remaining amount if the goal is not fully reached.
+                    <br />
+                    Thank you for your help!
+                </Text>
+                <br />
                 <CreateChipForm object={object} onSuccess={closeChipIn} />
             </Modal>
         </>
