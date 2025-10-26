@@ -53,7 +53,7 @@ prismaAdapter.createUser = (data: MyUser) => {
 export const authConfig = {
     providers: [
         DiscordProvider({
-            authorization: "https://discord.com/oauth2/authorize?scope=identify+guilds+guilds.members.read",
+            authorization: "https://discord.com/oauth2/authorize?scope=identify+guilds",
             profile: (profile: DiscordProfile) => {
                 return {
                     discord_id: profile.id,
